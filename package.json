@@ -10,7 +10,7 @@
   },
   "private": true,
   "scripts": {
-    "postinstall": "lerna bootstrap --hoist --no-ci",
+    "postinstall": "lerna bootstrap --hoist --no-ci && node use-custom-deps.js",
     "clean": "npm run clean:artifacts && npm run clean:packages && npm run clean:root",
     "clean:artifacts": "lerna run clean --parallel",
     "clean:packages": "lerna clean --yes",
@@ -36,6 +36,7 @@
     "babel-plugin-jsx-dom-expressions": "^0.32.11",
     "coveralls": "^3.1.1",
     "dom-expressions": "0.32.13",
+    "fs-extra": "^10.0.1",
     "gitly": "^2.1.0",
     "hyper-dom-expressions": "0.32.13",
     "jest": "~26.6.3",

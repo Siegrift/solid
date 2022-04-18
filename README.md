@@ -11,6 +11,68 @@
 
 Solid is a declarative JavaScript library for creating user interfaces. It does not use a Virtual DOM. Instead it opts to compile its templates down to real DOM nodes and wrap updates in fine grained reactions. This way when your state updates only the code that depends on it runs.
 
+## ! Trusted Types integration !
+
+This branch is PoC of of Trusted Types integration into solid.js library. From my testing, no direct changes to solid.js
+code needs to be performed - however there needs to be a change in the JSX preprocessing code. This code is included in
+a dependency called `dom-expressions`. The integration code can be found in
+https://github.com/Siegrift/dom-expressions/tree/trusted-types.
+
+### Getting started
+
+I had some problem using a custom build of `dom-expression` library, so I ended up replacing the necessary files inside
+node modules directly. This is a fragile setup, but it's good enough for this PoC. To correctly build the Trusted Types
+compliant version of solid.js, follow these steps:
+
+1. Clone this (`solid`) repository
+
+```sh
+git clone --branch trusted-types https://github.com/Siegrift/solid/
+```
+
+2. Clone `dom-expressions` alongside this project
+
+```sh
+git clone --branch trusted-types https://github.com/Siegrift/dom-expressions
+```
+
+The two projects should be alongside each other:
+
+```sh
+# tree -L 1 .
+├── solid
+├── dom-expressions
+...
+```
+
+3. Download dependencies and build the `dom-expressions` project:
+
+```sh
+cd dom-expressions
+npm install && npm run build
+```
+
+This will build the `dom-expressions` project and prepare it for use inside `solid` library.
+
+4. From this (`solid`) repository run:
+
+```sh
+npm install
+```
+
+5. The library is ready to be built (using `yarn build`) and used in solid applications
+
+### Integration description
+
+Solid transforms the JSX into code chunks using HTML templates which are then directly updated in the DOM when
+necessary. These templates are populated via `innerHTML` property which sets the content of the template based on the
+JSX expression. This JSX transformation is performed by babel at compile time. This by definition means that no
+dangerous (attacker controlled values) can be passed to the template. For this reason it is safe to allow all templates
+created by JSX transformation, which we do so using a Trusted Types policy called `solid-dom-expressions`.
+
+Note that the updates of the JSX or dynamic JSX values are handled via updates, for which standard Trusted Types rules
+apply.
+
 ### Key Features
 
 - Real DOM with fine-grained updates (<b>No Virtual DOM! No Dirty Checking Digest Loop!</b>).
@@ -32,7 +94,6 @@ Solid is a declarative JavaScript library for creating user interfaces. It does 
 - Transparent debugging: a `<div>` is just a div.
 
 ### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
-
 
 ## The Gist
 
